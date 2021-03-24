@@ -117,7 +117,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ContestsSourceFile.cpp">
+    <ClCompile Include="Source.cpp">
       <SubType>
       </SubType>
     </ClCompile>

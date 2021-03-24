@@ -16,6 +16,10 @@ public:
 		  size(other.size)
 		, arr(new T[other.size])
 	{
+		for (size_t i = 0; i < size; i++)
+		{
+			arr[i] = other.arr[i];
+		}
 	}
 
 	Array(Array &&other) :
