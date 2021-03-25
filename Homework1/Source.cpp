@@ -32,6 +32,7 @@ public:
 
 	Array& operator=(const Array& other) 
 	{
+		delete[] arr;
 		size = other.size;
 		arr = new T[other.size];
 		for (size_t i = 0; i < size; i++)
@@ -43,6 +44,7 @@ public:
 
 	Array& operator=(Array&& other) 
 	{
+		delete[] arr;
 		size = other.size;
 		arr = other.arr;
 		other.arr = nullptr;
@@ -54,8 +56,6 @@ public:
 	{
 		if (i < size)
 			return arr[i];
-		else
-			return T(0);
 	}
 
 	~Array()
@@ -102,22 +102,23 @@ public:
 
 	T& erase(unsigned int index)
 	{
-		if (!(index < size))
-			return T(0);
-		T* new_arr = new T[size - 1];
-		T t = arr[index];
-		for (size_t i = 0; i < index; i++)
+		if (index < size)
 		{
-			new_arr[i] = arr[i];
+			T* new_arr = new T[size - 1];
+			T t = arr[index];
+			for (size_t i = 0; i < index; i++)
+			{
+				new_arr[i] = arr[i];
+			}
+			for (size_t i = index + 1; i < size; i++)
+			{
+				new_arr[i - 1] = arr[i];
+			}
+			delete[] arr;
+			arr = new_arr;
+			new_arr = nullptr;
+			--size;
 		}
-		for (size_t i = index + 1; i < size; i++)
-		{
-			new_arr[i - 1] = arr[i];
-		}
-		delete[] arr;
-		arr = new_arr;
-		new_arr = nullptr;
-		--size;
 	}
 
 private:
