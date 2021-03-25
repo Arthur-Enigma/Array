@@ -70,9 +70,9 @@ public:
 		return size;
 	}
 
-	T& push_back(T& t)
+	void push_back(const T& t)
 	{
-		T* new_arr = T[size + 1];
+		T* new_arr = new T[size + 1];
 		for (size_t i = 0; i < size; i++)
 		{
 			new_arr[i] = arr[i];
@@ -82,13 +82,13 @@ public:
 		arr = new_arr;
 		new_arr = nullptr;
 		++size;
-		return t;
+		
 	}
 
-	T& pop_back()
+	void pop_back()
 	{
 		--size;
-		T* new_arr = T[size];
+		T* new_arr = new T[size];
 		for (size_t i = 0; i < size; i++)
 		{
 			new_arr[i] = arr[i];
@@ -97,10 +97,10 @@ public:
 		delete[] arr;
 		arr = new_arr;
 		new_arr = nullptr;
-		return t;
+		
 	}
 
-	T& erase(unsigned int index)
+	void erase(unsigned int index)
 	{
 		if (index < size)
 		{
@@ -130,7 +130,11 @@ private:
 int main()
 {
 
-
+	Array<int> a;
+	a.push_back(5);
+	a.push_back(6);
+	a.erase(0);
+	a.pop_back();
 
 
 	return 0;
