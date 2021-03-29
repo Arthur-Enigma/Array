@@ -32,6 +32,10 @@ public:
 
 	Array& operator=(const Array& other) 
 	{
+		if (other.arr == this->arr)
+		{
+			return *this;
+		}
 		delete[] arr;
 		size = other.size;
 		arr = new T[other.size];
@@ -105,7 +109,6 @@ public:
 		if (index < size)
 		{
 			T* new_arr = new T[size - 1];
-			T t = arr[index];
 			for (size_t i = 0; i < index; i++)
 			{
 				new_arr[i] = arr[i];
@@ -133,9 +136,9 @@ int main()
 	Array<int> a;
 	a.push_back(5);
 	a.push_back(6);
-	a.erase(0);
+	a.erase(5);
 	a.pop_back();
 
-
+	a[8];
 	return 0;
 }
