@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-
+#include <cassert>
 
 template <typename T>
 class Array
@@ -8,41 +8,40 @@ class Array
 public:
 	Array(unsigned int size = 0) :
 		  size(size)
-		, arr(new T[size])
+		, real_size(size + 1)
+		, arr(new T[real_size]) 
 	{
 	}
 
 	Array(const Array& other) :
 		  size(other.size)
-		, arr(new T[other.size])
+		, real_size(other.real_size)
+		, arr(new T[other.real_size])
 	{
-		for (size_t i = 0; i < size; i++)
-		{
-			arr[i] = other.arr[i];
-		}
+		memcpy(arr, other.arr, sizeof(T)*size);
 	}
 
 	Array(Array &&other) :
 		  size(other.size)
+		, real_size(other.real_size)
 		, arr(other.arr)
 	{
 		other.arr = nullptr;
 		other.size = 0;
+		other.real_size = 0;
 	}
 
 	Array& operator=(const Array& other) 
 	{
-		if (other.arr == this->arr)
+		if (&other == this)
 		{
 			return *this;
 		}
 		delete[] arr;
 		size = other.size;
-		arr = new T[other.size];
-		for (size_t i = 0; i < size; i++)
-		{
-			arr[i] = other.arr[i];
-		}
+		real_size = other.real_size;
+		arr = new T[other.real_size];
+		memcpy(arr, other.arr, sizeof(T)*size);
 		return *this;
 	}
 
@@ -50,16 +49,18 @@ public:
 	{
 		delete[] arr;
 		size = other.size;
+		real_size = other.real_size;
 		arr = other.arr;
 		other.arr = nullptr;
 		other.size = 0;
+		other.real_size = 0;
 		return *this;
 	}
 
-	T& operator[](unsigned int i)
+	T& operator[](unsigned int i) const
 	{
-		if (i < size)
-			return arr[i];
+		assert(i >= size);
+		return arr[i];
 	}
 
 	~Array()
@@ -73,72 +74,71 @@ public:
 	{
 		return size;
 	}
+	bool isempty() const
+	{
+		return !size;
+	}
 
 	void push_back(const T& t)
 	{
-		T* new_arr = new T[size + 1];
-		for (size_t i = 0; i < size; i++)
+		if (size + 1 < real_size)
 		{
-			new_arr[i] = arr[i];
+			arr[size] = t;
+			++size;
+			return;
 		}
+		real_size *= 2;
+		T* new_arr = new T[real_size];
+		memcpy(new_arr, arr, sizeof(T)*size);
 		new_arr[size] = t;
 		delete[] arr;
 		arr = new_arr;
 		new_arr = nullptr;
-		++size;
-		
+		++size;	
 	}
 
 	void pop_back()
 	{
-		--size;
-		T* new_arr = new T[size];
-		for (size_t i = 0; i < size; i++)
-		{
-			new_arr[i] = arr[i];
-		}
-		T t = arr[size];		
-		delete[] arr;
-		arr = new_arr;
-		new_arr = nullptr;
 		
+		if (this->isempty())
+			return;
+		erase(size - 1);
 	}
 
 	void erase(unsigned int index)
 	{
 		if (index < size)
 		{
-			T* new_arr = new T[size - 1];
-			for (size_t i = 0; i < index; i++)
-			{
-				new_arr[i] = arr[i];
-			}
-			for (size_t i = index + 1; i < size; i++)
-			{
-				new_arr[i - 1] = arr[i];
-			}
-			delete[] arr;
-			arr = new_arr;
-			new_arr = nullptr;
 			--size;
+			if (size < real_size / 2)
+			{
+				real_size /= 2;
+				T* new_arr = new T[real_size];
+				memcpy(new_arr, arr, sizeof(T)*index);
+				memcpy(&new_arr[index], &arr[index + 1], sizeof(T)*(size - index));
+				delete[] arr;
+				arr = new_arr;
+				new_arr = nullptr;
+				return;
+			}
+			else
+			{
+				memcpy(&arr[index], &arr[index + 1], sizeof(T)*(size - index));
+			}
 		}
+
 	}
 
 private:
 	T* arr;
 	unsigned int size;
+	unsigned int real_size;
 };
 
 
 int main()
 {
 
-	Array<int> a;
-	a.push_back(5);
-	a.push_back(6);
-	a.erase(5);
-	a.pop_back();
 
-	a[8];
 	return 0;
 }
