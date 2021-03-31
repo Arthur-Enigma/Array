@@ -57,7 +57,13 @@ public:
 		return *this;
 	}
 
-	T& operator[](unsigned int i) const
+	T& operator[](unsigned int i)
+	{
+		assert(i < size);
+		return arr[i];
+	}
+
+	const T& operator[](unsigned int i) const
 	{
 		assert(i < size);
 		return arr[i];
@@ -70,15 +76,9 @@ public:
 		arr = nullptr;
 	}
 
-	unsigned int getsize() const
-	{
-		return size;
-	}
+	unsigned int getsize() const { return size; }
 
-	bool isempty() const
-	{
-		return !size;
-	}
+	bool isempty() const { return !size; }
 
 	void push_back(const T& t)
 	{
