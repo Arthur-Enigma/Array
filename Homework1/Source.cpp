@@ -6,7 +6,7 @@ template <typename T>
 class Array
 {
 public:
-	Array(unsigned int size = 0) :
+	explicit Array(unsigned int size = 0) :
 		  size(size)
 		, real_size(size + 1)
 		, arr(new T[real_size]) 
@@ -59,7 +59,7 @@ public:
 
 	T& operator[](unsigned int i) const
 	{
-		assert(i >= size);
+		assert(i < size);
 		return arr[i];
 	}
 
@@ -74,6 +74,7 @@ public:
 	{
 		return size;
 	}
+
 	bool isempty() const
 	{
 		return !size;
@@ -138,7 +139,6 @@ private:
 
 int main()
 {
-
-
+	
 	return 0;
 }
