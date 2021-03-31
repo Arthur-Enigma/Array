@@ -31,29 +31,11 @@ public:
 		other.real_size = 0;
 	}
 
-	Array& operator=(const Array& other) 
+	Array& operator=(Array other) 
 	{
-		if (&other == this)
-		{
-			return *this;
-		}
-		delete[] arr;
-		size = other.size;
-		real_size = other.real_size;
-		arr = new T[other.real_size];
-		memcpy(arr, other.arr, sizeof(T)*size);
-		return *this;
-	}
-
-	Array& operator=(Array&& other) 
-	{
-		delete[] arr;
-		size = other.size;
-		real_size = other.real_size;
-		arr = other.arr;
-		other.arr = nullptr;
-		other.size = 0;
-		other.real_size = 0;
+		std::swap(arr, other.arr);
+		std::swap(size, other.size);
+		std::swap(real_size, other.real_size);
 		return *this;
 	}
 
